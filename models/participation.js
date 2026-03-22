@@ -1,0 +1,49 @@
+import pool from "../configs/db.js";
+
+const Participation = {
+  add: async (userId, eventId) => {
+    const query = `
+      INSERT INTO participations (user_id, event_id)
+      VALUES ($1, $2)
+      RETURNING *;
+    `;
+    const { rows } = await pool.query(query, [userId, eventId]);
+    return rows[0];
+  },
+
+  checkIfAlreadyParticipating: async (userId, eventId) => {
+    const query = `SELECT * FROM participations WHERE user_id = $1 AND event_id = $2`;
+    const { rows } = await pool.query(query, [userId, eventId]);
+    return rows.length > 0;
+  },
+getParticipantsByEvent: async (eventId, limit, offset) => {
+  const query = `
+    SELECT 
+      u.id, 
+      u.nom, 
+      u.prenom, 
+      u.email, 
+      u.tel, 
+      u.image, 
+      p.participated_at
+    FROM users u
+    JOIN participations p ON u.id = p.user_id
+    WHERE p.event_id = $1
+    ORDER BY p.participated_at DESC
+    LIMIT $2 OFFSET $3;
+  `;
+  
+  const countQuery = `SELECT COUNT(*) FROM participations WHERE event_id = $1;`;
+
+  const participantsRes = await pool.query(query, [eventId, limit, offset]);
+  const countRes = await pool.query(countQuery, [eventId]);
+
+  return {
+    participants: participantsRes.rows,
+    total: parseInt(countRes.rows[0].count)
+  };
+},
+  
+};
+
+export default Participation;
