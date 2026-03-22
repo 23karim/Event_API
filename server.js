@@ -4,6 +4,7 @@ import morgan from "morgan";
 import cors from "cors";
 import pool from "./configs/db.js";
 import userRoutes from "./routes/user.js";
+import eventRoutes from "./routes/event.js";
 
 const app = express();
 //const hostname = "127.0.0.1"; 
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/img', express.static('public/img'));
 
 app.use("/users", userRoutes);
+app.use("/events", eventRoutes); 
 
 
 
