@@ -2,9 +2,8 @@ import "dotenv/config";
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-import path from "path";
 import pool from "./configs/db.js";
-
+import userRoutes from "./routes/user.js";
 
 const app = express();
 //const hostname = "127.0.0.1"; 
@@ -15,6 +14,9 @@ app.use(cors());
 app.use(morgan("dev")); 
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true })); 
+app.use('/img', express.static('public/img'));
+
+app.use("/users", userRoutes);
 
 
 
