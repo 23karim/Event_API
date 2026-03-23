@@ -34,6 +34,6 @@ try {
     console.log(`🚀 Server running at http://${hostname}:${PORT}/`);
   });
 } catch (err) {
-  console.error("❌ Erreur critique de connexion à la DB :", err);
+  console.error(" Erreur critique de connexion à la DB :", err);
   process.exit(1); 
 }
