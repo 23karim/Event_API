@@ -79,3 +79,31 @@ export const getUserParticipations = async (req, res) => {
     res.status(500).json({ message: "Impossible de récupérer vos participations." });
   }
 };
+export const leaveEvent = async (req, res) => {
+  try {
+    const eventId = parseInt(req.params.id);
+    const userId = req.userId; // Récupéré via ton middleware d'auth
+
+    if (isNaN(eventId)) {
+      return res.status(400).json({ message: "ID d'événement invalide." });
+    }
+
+    // On vérifie d'abord si la participation existe
+    const alreadyJoined = await Participation.checkIfAlreadyParticipating(userId, eventId);
+    
+    if (!alreadyJoined) {
+      return res.status(404).json({ message: "Vous ne participez pas à cet événement." });
+    }
+
+    // Suppression
+    await Participation.delete(userId, eventId);
+
+    res.status(200).json({ 
+      message: "Vous vous êtes désinscrit avec succès de l'événement." 
+    });
+
+  } catch (error) {
+    console.error("Erreur Annulation Participation:", error);
+    res.status(500).json({ message: "Erreur lors de la désinscription." });
+  }
+};

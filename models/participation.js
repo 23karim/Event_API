@@ -66,6 +66,15 @@ const Participation = {
     const { rows } = await pool.query(query, [userId]);
     return rows;
   },
+  delete: async (userId, eventId) => {
+    const query = `
+      DELETE FROM participations 
+      WHERE user_id = $1 AND event_id = $2
+      RETURNING *;
+    `;
+    const { rows } = await pool.query(query, [userId, eventId]);
+    return rows[0]; // Retourne la participation supprimée ou undefined
+  },
 };
 
 export default Participation;

@@ -5,7 +5,8 @@ import upload from "../middlewares/multer-config.js";
 import { 
   getEventParticipants, 
   getUserParticipations, 
-  joinEvent 
+  joinEvent, 
+  leaveEvent
 } from "../controllers/participation.js";
 
 const router = express.Router();
@@ -17,8 +18,9 @@ router.get("/my-participations", auth, isClient, getUserParticipations);
 router.post("/add", auth, isAdmin, upload, addEvent);
 router.delete("/delete-all", auth, isAdmin, deleteAllEvents);
 router.delete("/delete/:id", auth, isAdmin, deleteEvent);
-router.get("//:id", getEventById); 
+router.get("/:id", getEventById); 
 router.post("/:id/join", auth, isClient, joinEvent);
 router.get("/:id/participants", auth, isAdmin, getEventParticipants);
+router.delete('/:id/leave', auth, isClient, leaveEvent);
 
 export default router;
